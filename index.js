@@ -33,6 +33,35 @@ app.get("/", (req, res) => {
   });
 });
 
+app.post("/api/register", async (req, res) => {
+  console.log(req.body);
+  try {
+    await UserModel.create({
+      name: req.body.name,
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
+    });
+    res.json({ status: "ok" });
+  } catch (error) {
+    res.json({ status: "error", error: "duplicate email" });
+  }
+});
+
+app.post("/api/login", async (req, res) => {
+  console.log(req.body);
+  const user = await UserModel.findOne({
+    email: req.body.email,
+    password: req.body.password,
+  });
+
+  if (user) {
+    return res.json({ status: "ok", user: "true" });
+  } else {
+    res.json({ status: "error", user: "true" });
+  }
+});
+
 app.post("/createUser", async (req, res) => {
   const user = req.body;
   const newUser = new UserModel(user);
