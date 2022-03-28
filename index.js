@@ -6,6 +6,7 @@ const WishModel = require("./models/Wish");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const keys = require("./config/keys");
 
 app.use(express.json());
 app.use(cors());
@@ -71,7 +72,7 @@ app.post("/api/login", async (req, res) => {
   if (isPasswordValid) {
     const token = jwt.sign(
       { username: user.username, email: user.email },
-      "secret1234"
+      keys.secretOrKey
     );
     return res.json({ status: "ok", user: token });
   } else {
@@ -82,9 +83,11 @@ app.post("/api/login", async (req, res) => {
 app.get("/api/name", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
-    const decoded = jwt.verify(token, "secret1234");
-    const email = decoded.email;
-    const user = await UserModel.findOne({ email: email });
+    const decoded = jwt.verify(token, keys.secretOrKey);
+    const username = decoded.username;
+    console.log(decoded);
+
+    const user = await UserModel.findOne({ username: username });
     return res.json({ status: "ok", name: user.name });
   } catch (error) {
     console.log(error);
@@ -95,7 +98,7 @@ app.get("/api/name", async (req, res) => {
 app.post("/api/name", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
-    const decoded = jwt.verify(token, "secret1234");
+    const decoded = jwt.verify(token, keys.secretOrKey);
     const email = decoded.email;
     await User.updateOne({ email: email }, { $set: { name: req.body.name } });
     return res.json({ status: "ok", name: user.name });
