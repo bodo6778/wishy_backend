@@ -10,7 +10,11 @@ const bcrypt = require("bcryptjs");
 app.use(express.json());
 app.use(cors());
 
-const db = require("./keys").mongoURI;
+const db = require("./config/keys").mongoURI;
+
+const passport = require("passport");
+const users = require("./api/users");
+
 mongoose
   .connect(db)
   .then(() => console.log("MongoDB successfully connected"))
@@ -26,17 +30,17 @@ app.get("/getUsers", (req, res) => {
   });
 });
 
-app.get("/", (req, res) => {
-  WishModel.find({}, (err, result) => {
-    if (err) {
-      res.json(err);
-    } else {
-      res.json(result);
-    }
-  });
-});
+// app.get("/", (req, res) => {
+//   WishModel.find({}, (err, result) => {
+//     if (err) {
+//       res.json(err);
+//     } else {
+//       res.json(result);
+//     }
+//   });
+// });
 
-app.post("/api/register", async (req, res) => {
+app.post("/api/registerOld", async (req, res) => {
   console.log(req.body);
   try {
     const newPassword = await bcrypt.hash(req.body.password, 10);
@@ -108,6 +112,11 @@ app.post("/createUser", async (req, res) => {
 
   res.json(user);
 });
+
+// Passport middleware
+app.use(passport.initialize()); // Passport config
+require("./config/passport")(passport); // Routes
+app.use("/api/users", users);
 
 app.listen(3001, () => {
   console.log("Server is running...");

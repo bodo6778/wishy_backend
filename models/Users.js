@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const WishSchema = require("./Wish");
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -18,6 +19,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  // wishes: [WishSchema],
 });
 
 const UserModel = mongoose.model("users", UserSchema);

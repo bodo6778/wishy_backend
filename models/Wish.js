@@ -22,4 +22,4 @@ const WishSchema = new mongoose.Schema({
 });
 
 const WishModel = mongoose.model("wishes", WishSchema);
-module.exports = WishModel;
+module.exports = { WishModel, WishSchema };
