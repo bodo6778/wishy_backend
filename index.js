@@ -15,6 +15,7 @@ const db = require("./config/keys").mongoURI;
 
 const passport = require("passport");
 const users = require("./api/users");
+const wishes = require("./api/wishes");
 
 mongoose
   .connect(db)
@@ -120,6 +121,7 @@ app.post("/createUser", async (req, res) => {
 app.use(passport.initialize()); // Passport config
 require("./config/passport")(passport); // Routes
 app.use("/api/users", users);
+app.use("/api/wishes", wishes);
 
 app.listen(3001, () => {
   console.log("Server is running...");
