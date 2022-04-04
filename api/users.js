@@ -86,6 +86,7 @@ router.post("/login", (req, res) => {
             res.json({
               success: true,
               username: payload.username,
+              token: token,
             });
           }
         );
@@ -96,6 +97,29 @@ router.post("/login", (req, res) => {
       }
     });
   });
+});
+
+/**
+ * @route GET api/users/getProfile
+ * @desc Get users's profile
+ * @access private to user
+ */
+router.get("/getProfile", async (req, res) => {
+  const token = req.headers["x-access-token"];
+  try {
+    const decoded = jwt.verify(token, keys.secretOrKey);
+    const username = decoded.username;
+
+    const user = await User.findOne({ username: username });
+    return res.json({
+      username: user.username,
+      email: user.email,
+      name: user.name,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error", error: "invalid token " });
+  }
 });
 
 module.exports = router;
