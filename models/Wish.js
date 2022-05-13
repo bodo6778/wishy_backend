@@ -1,5 +1,20 @@
 const mongoose = require("mongoose");
 
+const LinksSchema = new mongoose.Schema({
+  link: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  pricy: {
+    type: Number,
+    required: true,
+  },
+});
+
 const WishSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -17,7 +32,7 @@ const WishSchema = new mongoose.Schema({
     required: true,
   },
   links: {
-    type: Array,
+    type: [LinksSchema],
   },
 });
 
