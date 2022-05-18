@@ -7,7 +7,7 @@ const User = require("../models/Users");
 
 /**
  * @route POST api/wishlist/add
- * @desc Add wish to user
+ * @desc Add wishlist to user
  * @access private to user
  */
 router.post("/add", async (req, res) => {
@@ -31,6 +31,29 @@ router.post("/add", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.json({ status: "error", error: "failed to push" });
+  }
+});
+
+/**
+ * @route POST api/wishlist/delete
+ * @desc Delete wishlist from user
+ * @access private to user
+ */
+router.delete("/delete", async (req, res) => {
+  const token = req.headers["x-access-token"];
+  try {
+    const decoded = jwt.verify(token, keys.secretOrKey);
+    const username = decoded.username;
+    await User.updateOne(
+      {
+        username: username,
+      },
+      { $pull: { wishlists: { title: req.body.title } } }
+    );
+    return res.json({ status: "ok" });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error", error: "failed to delete" });
   }
 });
 

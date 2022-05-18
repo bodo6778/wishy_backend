@@ -77,8 +77,8 @@ router.post("/addLink", async (req, res) => {
     await User.updateOne(
       {
         username: username,
-        "wishlist.title": req.body.wishlistTitle,
-        "wishlist.wishes.title": req.body.wishTitle,
+        "wishlists.title": req.body.wishlistTitle,
+        "wishlists.wishes.title": req.body.wishTitle,
       },
       {
         $push: {
@@ -105,6 +105,30 @@ router.post("/addLink", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.json({ status: "error", error: "failed to push" });
+  }
+});
+
+/**
+ * @route POST api/wish/delete
+ * @desc Delete wish from user's wishlists
+ * @access private to user
+ */
+router.delete("/delete", async (req, res) => {
+  const token = req.headers["x-access-token"];
+  try {
+    const decoded = jwt.verify(token, keys.secretOrKey);
+    const username = decoded.username;
+    await User.updateOne(
+      {
+        username: username,
+        "wishlists.title": req.body.wishlistTitle,
+      },
+      { $pull: { "wishlists.wishes": { title: req.body.wishTitle } } }
+    );
+    return res.json({ status: "ok" });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error", error: "failed to delete" });
   }
 });
 
