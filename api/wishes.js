@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../config/keys"); // Load input validation
 
@@ -109,7 +108,7 @@ router.post("/addLink", async (req, res) => {
 });
 
 /**
- * @route POST api/wish/delete
+ * @route POST api/wishes/delete
  * @desc Delete wish from user's wishlists
  * @access private to user
  */
@@ -123,7 +122,14 @@ router.delete("/delete", async (req, res) => {
         username: username,
         "wishlists.title": req.body.wishlistTitle,
       },
-      { $pull: { "wishlists.wishes": { title: req.body.wishTitle } } }
+      { $pull: { "wishlists.$[q].wishes": { title: req.body.wishTitle } } },
+      {
+        arrayFilters: [
+          {
+            "q.title": req.body.wishlistTitle,
+          },
+        ],
+      }
     );
     return res.json({ status: "ok" });
   } catch (error) {
