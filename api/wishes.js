@@ -82,10 +82,50 @@ router.post("/addLink", async (req, res) => {
       {
         $push: {
           "wishlists.$[p].wishes.$[q].links": {
-            // eroare la post, nu gaseste whishlist.0.title
             link: req.body.link,
             price: req.body.price,
             pricy: req.body.pricy,
+          },
+        },
+      },
+      {
+        arrayFilters: [
+          {
+            "p.title": req.body.wishlistTitle,
+          },
+          {
+            "q.title": req.body.wishTitle,
+          },
+        ],
+      }
+    );
+    return res.json({ status: "ok" });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error", error: "failed to push" });
+  }
+});
+
+/**
+ * @route POST api/wishes/deleteLink
+ * @desc Delete link from wish
+ * @access private to user
+ */
+router.delete("/deleteLink", async (req, res) => {
+  const token = req.headers["x-access-token"];
+  try {
+    const decoded = jwt.verify(token, keys.secretOrKey);
+    const username = decoded.username;
+    await User.updateOne(
+      {
+        username: username,
+        "wishlists.title": req.body.wishlistTitle,
+        "wishlists.wishes.title": req.body.wishTitle,
+      },
+      {
+        $pull: {
+          "wishlists.$[p].wishes.$[q].links": {
+            link: req.body.linkTitle,
           },
         },
       },
