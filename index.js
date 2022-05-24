@@ -12,7 +12,6 @@ app.use(express.json());
 app.use(cors());
 
 const db2 = process.env.DB;
-const db = require("./config/keys").mongoURI;
 
 const passport = require("passport");
 const users = require("./api/users");
