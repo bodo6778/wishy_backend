@@ -6,13 +6,14 @@ const WishModel = require("./models/Wish");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+require("dotenv").config({ path: __dirname + "/.env" });
 const key = process.env.SECRET;
 
 app.use(express.json());
 app.use(cors());
 
 const db2 = process.env.DB;
-
+console.log(db2);
 const passport = require("passport");
 const users = require("./api/users");
 const wishes = require("./api/wishes");
