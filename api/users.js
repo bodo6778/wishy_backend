@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../config/keys"); // Load input validation
+const key = process.env.secretOrKey;
 
 const validateRegisterInput = require("../validation/register");
 const validateLoginInput = require("../validation/login"); // Load User model
@@ -63,7 +64,7 @@ router.post("/login", (req, res) => {
   User.findOne({ email }).then((user) => {
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ emailnotfound: "Email not found" });
+      return res.status(400).json({ emailnotfound: "Email not found" });
     }
     // Check password
     bcrypt.compare(password, user.password).then((isMatch) => {
@@ -78,7 +79,7 @@ router.post("/login", (req, res) => {
         // Sign token
         jwt.sign(
           payload,
-          keys.secretOrKey,
+          key,
           {
             expiresIn: 31556926, // 1 year in seconds
           },
@@ -107,7 +108,7 @@ router.post("/login", (req, res) => {
 router.get("/getProfile", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
-    const decoded = jwt.verify(token, keys.secretOrKey);
+    const decoded = jwt.verify(token, key);
     const username = decoded.username;
 
     const user = await User.findOne({ username: username });
@@ -130,7 +131,7 @@ router.get("/getProfile", async (req, res) => {
  */
 router.post("/change", async (req, res) => {
   const token = req.headers["x-access-token"];
-  const decoded = jwt.verify(token, keys.secretOrKey);
+  const decoded = jwt.verify(token, key);
   const username = decoded.username;
 
   console.log(req.body);

@@ -5,6 +5,7 @@ const keys = require("../config/keys"); // Load input validation
 
 const User = require("../models/Users");
 const Wish = require("../models/Wish");
+const key = process.env.secretOrKey;
 
 /**
  * @route POST api/wishes/add
@@ -14,7 +15,7 @@ const Wish = require("../models/Wish");
 router.post("/add", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
-    const decoded = jwt.verify(token, keys.secretOrKey);
+    const decoded = jwt.verify(token, key);
     const username = decoded.username;
     await User.updateOne(
       { username: username, "wishlists.title": req.body.wishlistTitle },
@@ -52,7 +53,7 @@ router.post("/add", async (req, res) => {
 router.get("/getWishlists", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
-    const decoded = jwt.verify(token, keys.secretOrKey);
+    const decoded = jwt.verify(token, key);
     const username = decoded.username;
 
     const user = await User.findOne({ username: username });
@@ -71,7 +72,7 @@ router.get("/getWishlists", async (req, res) => {
 router.post("/addLink", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
-    const decoded = jwt.verify(token, keys.secretOrKey);
+    const decoded = jwt.verify(token, key);
     const username = decoded.username;
     await User.updateOne(
       {
@@ -114,7 +115,7 @@ router.post("/addLink", async (req, res) => {
 router.delete("/deleteLink", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
-    const decoded = jwt.verify(token, keys.secretOrKey);
+    const decoded = jwt.verify(token, key);
     const username = decoded.username;
     await User.updateOne(
       {
@@ -155,7 +156,7 @@ router.delete("/deleteLink", async (req, res) => {
 router.delete("/delete", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
-    const decoded = jwt.verify(token, keys.secretOrKey);
+    const decoded = jwt.verify(token, key);
     const username = decoded.username;
     await User.updateOne(
       {

@@ -7,10 +7,12 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const keys = require("./config/keys");
+const key = process.env.secretOrKey;
 
 app.use(express.json());
 app.use(cors());
 
+const db2 = process.env.DB;
 const db = require("./config/keys").mongoURI;
 
 const passport = require("passport");
@@ -19,7 +21,7 @@ const wishes = require("./api/wishes");
 const wishlist = require("./api/wishlist");
 
 mongoose
-  .connect(db)
+  .connect(db2)
   .then(() => console.log("MongoDB successfully connected"))
   .catch((err) => console.log(err));
 
@@ -72,10 +74,7 @@ app.post("/api/login", async (req, res) => {
   );
 
   if (isPasswordValid) {
-    const token = jwt.sign(
-      { username: user.username, email: user.email },
-      keys.secretOrKey
-    );
+    const token = jwt.sign({ username: user.username, email: user.email }, key);
     return res.json({ status: "ok", user: token });
   } else {
     res.json({ status: "error", user: "true" });
@@ -85,7 +84,7 @@ app.post("/api/login", async (req, res) => {
 app.get("/api/name", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
-    const decoded = jwt.verify(token, keys.secretOrKey);
+    const decoded = jwt.verify(token, key);
     const username = decoded.username;
     console.log(decoded);
 
@@ -100,7 +99,7 @@ app.get("/api/name", async (req, res) => {
 app.post("/api/name", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
-    const decoded = jwt.verify(token, keys.secretOrKey);
+    const decoded = jwt.verify(token, key);
     const email = decoded.email;
     await User.updateOne({ email: email }, { $set: { name: req.body.name } });
     return res.json({ status: "ok", name: user.name });
@@ -128,3 +127,5 @@ app.use("/api/wishlist", wishlist);
 app.listen(3001, () => {
   console.log("Server is running...");
 });
+
+module.exports = app;

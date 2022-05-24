@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const keys = require("../config/keys"); // Load input validation
+const key = process.env.secretOrKey;
 
 const User = require("../models/Users");
 
@@ -13,7 +14,7 @@ const User = require("../models/Users");
 router.post("/add", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
-    const decoded = jwt.verify(token, keys.secretOrKey);
+    const decoded = jwt.verify(token, key);
     const username = decoded.username;
     await User.updateOne(
       { username: username },
@@ -42,7 +43,7 @@ router.post("/add", async (req, res) => {
 router.delete("/delete", async (req, res) => {
   const token = req.headers["x-access-token"];
   try {
-    const decoded = jwt.verify(token, keys.secretOrKey);
+    const decoded = jwt.verify(token, key);
     const username = decoded.username;
     await User.updateOne(
       {
