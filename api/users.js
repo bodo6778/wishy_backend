@@ -115,6 +115,7 @@ router.get("/getProfile", async (req, res) => {
       username: user.username,
       email: user.email,
       name: user.name,
+      description: user.description,
     });
   } catch (error) {
     console.log(error);
