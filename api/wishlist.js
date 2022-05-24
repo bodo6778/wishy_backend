@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const keys = require("../config/keys"); // Load input validation
 const key = process.env.secretOrKey;
 
 const User = require("../models/Users");
