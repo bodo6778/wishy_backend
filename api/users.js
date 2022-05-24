@@ -123,4 +123,54 @@ router.get("/getProfile", async (req, res) => {
   }
 });
 
+/**
+ * @route POST api/users/change
+ * @desc Change user's profile
+ * @access Private
+ */
+router.post("/change", async (req, res) => {
+  const token = req.headers["x-access-token"];
+  const decoded = jwt.verify(token, keys.secretOrKey);
+  const username = decoded.username;
+
+  console.log(req.body);
+
+  try {
+    if (req.body.username !== "") {
+      const usernameExists = User.findOne({
+        username: req.body.username,
+      });
+      if (usernameExists) {
+        res.status(400);
+        throw new Error("Username already exists");
+      }
+    }
+
+    if (req.body.email !== "") {
+      const emailExists = User.findOne({ email: req.body.email });
+      if (emailExists) {
+        res.status(400);
+        throw new Error("Email already exists");
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  try {
+    await User.updateOne(
+      { username: username },
+      {
+        username: req.body.username,
+        email: req.body.email,
+        name: req.body.name,
+        description: req.body.description,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error", error: "failed to push" });
+  }
+});
+
 module.exports = router;
