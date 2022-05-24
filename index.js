@@ -6,7 +6,7 @@ const WishModel = require("./models/Wish");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const key = process.env.secretOrKey;
+const key = process.env.SECRET;
 
 app.use(express.json());
 app.use(cors());

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const key = process.env.secretOrKey;
+const key = process.env.SECRET;
 
 const validateRegisterInput = require("../validation/register");
 const validateLoginInput = require("../validation/login"); // Load User model

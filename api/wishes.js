@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/Users");
 const Wish = require("../models/Wish");
-const key = process.env.secretOrKey;
+const key = process.env.SECRET;
 
 /**
  * @route POST api/wishes/add
