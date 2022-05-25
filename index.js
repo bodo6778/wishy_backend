@@ -11,10 +11,10 @@ const key = process.env.SECRET;
 
 app.use(express.json());
 
-app.use(cors({
-  origin: ['https://wishy.vercel.app', 'https://localhost:3000', 'http://localhost:3000']
-}));
-// app.use(cors())
+// app.use(cors({
+//   origin: ['https://wishy.vercel.app', 'https://localhost:3000', 'http://localhost:3000']
+// }));
+app.use(cors());
 // const allowCors = fn => async (req, res) => {
 //   res.setHeader('Access-Control-Allow-Credentials', true)
 //   res.setHeader('Access-Control-Allow-Origin', 'wishy.vercel.app')
@@ -38,7 +38,6 @@ app.use(cors({
 // }
 
 // module.exports = allowCors(handler)
-
 
 const db2 = process.env.DB;
 console.log(db2);
