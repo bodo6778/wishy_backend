@@ -16,7 +16,6 @@ const User = require("../models/Users");
  */
  router.get("/listUsers", async (req, res) => {
   try {
-
     const user = await User.findOne({});
     return res.json({
       username: user.username,
