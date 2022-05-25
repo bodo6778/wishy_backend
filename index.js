@@ -6,7 +6,7 @@ const WishModel = require("./models/Wish");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-require("dotenv").config({ path: __dirname + "/.env" });
+require("dotenv").config();
 const key = process.env.SECRET;
 
 app.use(express.json());
