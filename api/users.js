@@ -10,6 +10,28 @@ const validateLoginInput = require("../validation/login"); // Load User model
 const User = require("../models/Users");
 
 /**
+ * @route get api/users/listUsers
+ * @desc Find all users
+ * @access Public
+ */
+ router.get("/listUsers", async (req, res) => {
+  try {
+
+    const user = await User.findOne({});
+    return res.json({
+      username: user.username,
+      email: user.email,
+      name: user.name,
+      description: user.description,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error", error: error });
+  }
+});
+
+
+/**
  * @route POST api/users/register
  * @desc Register user
  * @access Public
