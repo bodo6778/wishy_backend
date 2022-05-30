@@ -14,7 +14,7 @@ const User = require("../models/Users");
  * @desc Find all users
  * @access Public
  */
- router.get("/listUsers", async (req, res) => {
+router.get("/listUsers", async (req, res) => {
   try {
     const user = await User.findOne({});
     return res.json({
@@ -28,7 +28,6 @@ const User = require("../models/Users");
     res.json({ status: "error", error: error });
   }
 });
-
 
 /**
  * @route POST api/users/register
@@ -191,6 +190,26 @@ router.post("/change", async (req, res) => {
   } catch (error) {
     console.log(error);
     res.json({ status: "error", error: "failed to push" });
+  }
+});
+
+/**
+ * @route get api/users/[username]
+ * @desc Find specific user
+ * @access Public
+ */
+router.get("/:username", async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username });
+    return res.json({
+      username: user.username,
+      email: user.email,
+      name: user.name,
+      wishlists: user.wishlists,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error", error: error });
   }
 });
 
