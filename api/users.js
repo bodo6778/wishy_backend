@@ -201,6 +201,7 @@ router.post("/change", async (req, res) => {
 router.get("/:username", async (req, res) => {
   try {
     const user = await User.findOne({ username: req.params.username });
+    if (!user) throw "User not found! - get api/users/[username]";
     return res.json({
       username: user.username,
       email: user.email,
