@@ -34,38 +34,42 @@ router.get("/listUsers", async (req, res) => {
  * @desc Register user
  * @access Public
  */
-router.post("/register", (req, res) => {
-  const { errors, isValid } = validateRegisterInput(req.body);
-
-  // Check validation
-  if (!isValid) {
-    return res.status(400).json(errors);
-  }
-
-  User.findOne({ email: req.body.email }).then((user) => {
-    if (user) {
-      return res.status(400).json({ email: "Email already exists" });
-    } else {
-      const newUser = new User({
-        name: req.body.name,
-        email: req.body.email,
-        username: req.body.username,
-        password: req.body.password,
-      });
-
-      // Hash password before saving in database
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
-          if (err) throw err;
-          newUser.password = hash;
-          newUser
-            .save()
-            .then((user) => res.json(user))
-            .catch((err) => console.log(err));
-        });
-      });
+router.post("/register", async (req, res) => {
+  try {
+    const { errors, isValid } = validateRegisterInput(req.body);
+    // Check validation
+    if (!isValid) {
+      throw errors;
     }
-  });
+
+    const userByEmail = await User.findOne({ email: req.body.email });
+    const userByUsername = await User.findOne({ email: req.body.username });
+    if (userByEmail) {
+      throw "Email already exists!";
+    }
+    if (userByUsername) {
+      throw "Username already exists!";
+    }
+
+    const newUser = new User({
+      name: req.body.name,
+      email: req.body.email,
+      username: req.body.username,
+      password: req.body.password,
+    });
+
+    // Hash password before saving in database
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(newUser.password, salt, (err, hash) => {
+        if (err) throw err;
+        newUser.password = hash;
+        newUser.save();
+      });
+    });
+  } catch (error) {
+    res.status(400);
+    res.json({ status: "error", error: error });
+  }
 });
 
 /**  @route POST api/users/login
