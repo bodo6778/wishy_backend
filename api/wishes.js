@@ -16,6 +16,15 @@ router.post("/add", async (req, res) => {
   try {
     const decoded = jwt.verify(token, key);
     const username = decoded.username;
+    const wish = await User.findOne({
+      username: username,
+      "wishlists.title": req.body.wishlistTitle,
+      "wishlists.wishes.title": req.body.title,
+    });
+    if (wish) {
+      throw "Wish already exists!";
+    }
+
     await User.updateOne(
       { username: username, "wishlists.title": req.body.wishlistTitle },
       {
@@ -37,10 +46,10 @@ router.post("/add", async (req, res) => {
         ],
       }
     );
-    return res.json({ status: "ok" });
+    return res.json({});
   } catch (error) {
-    console.log(error);
-    res.json({ status: "error", error: "failed to push" });
+    res.status(400);
+    return res.json({ status: "error", error: error });
   }
 });
 

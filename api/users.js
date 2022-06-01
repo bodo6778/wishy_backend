@@ -66,9 +66,10 @@ router.post("/register", async (req, res) => {
         newUser.save();
       });
     });
+    return res.status(200);
   } catch (error) {
-    res.status(400);
     res.json({ status: "error", error: error });
+    return res.status(400);
   }
 });
 
