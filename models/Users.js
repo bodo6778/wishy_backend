@@ -44,6 +44,9 @@ const WishlistSchema = new mongoose.Schema({
     type: String,
   },
   wishes: [WishSchema],
+  hidden: {
+    type: Boolean,
+  },
 });
 
 const UserSchema = new mongoose.Schema({

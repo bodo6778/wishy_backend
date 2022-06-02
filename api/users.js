@@ -211,7 +211,7 @@ router.get("/:username", async (req, res) => {
       username: user.username,
       email: user.email,
       name: user.name,
-      wishlists: user.wishlists,
+      wishlists: user.wishlists.filter((w) => w.hidden === false),
     });
   } catch (error) {
     console.log(error);

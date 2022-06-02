@@ -30,8 +30,8 @@ router.post("/add", async (req, res) => {
         $push: {
           wishlists: {
             title: req.body.title,
-            description: req.body.description,
             wishes: [],
+            hidden: false,
           },
         },
       }
@@ -67,4 +67,33 @@ router.delete("/delete", async (req, res) => {
   }
 });
 
+/**
+ * @route POST api/wishlist/hide
+ * @desc Hide/Unhide wishlist of user
+ * @access private to user
+ */
+router.post("/hide", async (req, res) => {
+  const token = req.headers["x-access-token"];
+  try {
+    const decoded = jwt.verify(token, key);
+    const username = decoded.username;
+    await User.findOneAndUpdate(
+      {
+        username: username,
+      },
+      { $set: { "wishlists.$[q].hidden": req.body.hidden } },
+      {
+        arrayFilters: [
+          {
+            "q.title": req.body.title,
+          },
+        ],
+      }
+    );
+    return res.json({ status: "ok" });
+  } catch (error) {
+    console.log(error);
+    res.json({ status: "error", error: "failed to hide" });
+  }
+});
 module.exports = router;
