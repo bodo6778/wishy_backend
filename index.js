@@ -73,7 +73,6 @@ allowCors(handler);
 module.exports = allowCors(handler);
 
 const db2 = process.env.DB;
-console.log(db2);
 const passport = require("passport");
 const users = require("./api/users");
 const wishes = require("./api/wishes");
